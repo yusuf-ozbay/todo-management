@@ -39,9 +39,37 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public List<TodoDto> getAllTodos() {
 
-        List<Todo> todos= todoRepository.findAll();
+        List<Todo> todos = todoRepository.findAll();
         return todos.stream().map(TodoMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public TodoDto updateTodo(TodoDto todoDto, Long id) {
+        // Belirtilen id'ye sahip mevcut Todoo'yu veritabanından alalım. Eğer mevcut değilse, bir ResourceNotFoundException fırlatalım.
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
+
+        // Güncel verileri Todoo nesnesine atayalım.
+        todo.setTitle(todoDto.getTitle());
+        todo.setDescripton(todoDto.getDescripton());
+        todo.setComleted(todoDto.isComleted());
+
+        // Güncellediğimiz Todoo nesnesini veritabanında kaydedelim.
+        Todo updatedTodo = todoRepository.save(todo);
+
+        // Güncellenen Todoo nesnesini TodoDto olarak döndürelim.
+        return TodoMapper.toDto(updatedTodo);
+    }
+
+    @Override
+    public void deleteTodo(Long id) {
+
+        Todo todo=  todoRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("todo not found with id :"+id));
+        todoRepository.deleteById(id);
+
+    }
+
 
 }
 
