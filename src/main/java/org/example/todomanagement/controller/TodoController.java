@@ -66,4 +66,21 @@ public class TodoController {
 
     }
 
+    //put ile farkı put mevcut kaynağı günceller.patch ise mevcut kaynağı kısmen günceller
+    @PatchMapping("{id}/comlete")
+    public ResponseEntity<TodoDto> completeTodo(@PathVariable("id") Long todoId){
+
+        TodoDto updatedTodo= todoService.completeTodo(todoId);
+        return ResponseEntity.ok(updatedTodo);
+    }
+
+    @PatchMapping("{id}/inComlete")
+    public ResponseEntity<TodoDto> inCompleteTodo(@PathVariable("id") Long todoId){
+
+        TodoDto updatedTodo= todoService.inCompleteTodo(todoId);
+        return ResponseEntity.ok(updatedTodo);
+    }
+
+
+
 }
